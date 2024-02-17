@@ -73,10 +73,13 @@ function Max(a,b) {
 let base = () => { };
 let Forward = () => {
     turt.move(turtStep);
+
     if(turt.pen)
-    ctx.lineTo(turt.pos.x, turt.pos.y);
+        ctx.lineTo(turt.pos.x, turt.pos.y);
+
     if(!firstRun)
-    return;
+        return;
+
     xMin = Min(xMin, turt.pos.x);
     xMax = Max(xMax, turt.pos.x);
     yMin = Min(yMin, turt.pos.y);
@@ -126,6 +129,7 @@ let N = 8;
 
 run();
 function main() {
+
     for(let i=0; i<Vars.length; i++) {
         Vars[i].setVariableList(Vars);
         Vars[i].setActivationFunction();
@@ -140,6 +144,7 @@ function main() {
         return -1;
     }
 
+    // Activating each character in the axiom.
     let fBody = '';
     for(let i=0; i<Axiom.length; i++) {
         let indx = indxOf(Axiom.charAt(i));
@@ -149,21 +154,28 @@ function main() {
     }
     let start = new Function('N', fBody);
     
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = '#121212';
     ctx.fillRect(-width/2, -height/2, width, height);
 
     ctx.strokeStyle = '#ffffff'; //Adjusts line color
     ctx.lineWidth = 1; //Adjusts line width
 
     // Running algorithm to find the mean position of all points on the curve.
+    firstRun = true;
     turt.moveTo(new Vector(0,0));
+    
+    xMin = turt.pos.x;
+    xMax = turt.pos.x;
+    yMin = turt.pos.y;
+    yMax = turt.pos.y;
+
     turt.penUp();
     start(N);
     firstRun = false;
 
     ctx.fillStyle = '#ff0000';
-    xMean = (xMin+xMax)/2;
-    yMean = (yMin+yMax)/2;
+    let xMean = (xMin+xMax)/2;
+    let yMean = (yMin+yMax)/2;
     console.log(xMin, yMin, xMax, yMax);
 
 
