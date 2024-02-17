@@ -7,7 +7,52 @@
         <title>L-System</title>
     </head>
     <body>
-        <canvas id="canv" width="1700" height="1000"></canvas>
+        <canvas id="canv" width="800" height="800"></canvas>
+        <div class="inputs">
+            <form>
+                <div>
+                    <label for="axiomIn">Starting Axiom: </label>
+                    <input type="text" id = "axiomIn" value="A">
+                </div>
+                <div>
+                    <label for="aRelationships">A => </label>
+                    <input type="text" id = "aRelationships" value="BF+AF+B">
+                </div>
+            
+                <div>
+                    <label for="bRelationships">B => </label>
+                    <input type="text" id = "bRelationships" value="AF-BF-A">
+                </div>
+            
+                <div>
+                    <label for="fRelationships">F => </label>
+                    <input type="text" id = "fRelationships" value="F">
+                </div>
+            
+                <div>
+                    <label for="gRelationships">G => </label>
+                    <input type="text" id = "gRelationships" value="G">
+                </div>
+
+                <div>
+                    <label for="numIter">Depth: </label>
+                    <input type="number" id="numIter" min="1" max="12" value="8">
+                </div>
+                
+                <div>
+                    <label for="turnAngle">Turn Angle: </label>
+                    <input type="number" id="turnAngle" step="0.5" min="0" max="360" value="60">
+                </div>
+                
+                <div>
+                    <label for="turnStepSize">Edge Length: </label>
+                    <input type="number" id="turnStepSize" step="0.1" min="1" max="4" value="1.8">
+                </div>
+                
+
+                <button type="button" onclick="run()">RUN</button>
+            </form>
+        </div>
     </body>
     <script src="./vector.js"></script>
     <script src="./turt.js"></script>

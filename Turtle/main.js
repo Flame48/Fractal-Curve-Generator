@@ -35,6 +35,7 @@ class Variable {
     }
 }
 
+// Setting up Canvas Reference and Context
 let canv = document.getElementById('canv');
 let ctx = canv.getContext('2d');
 let width = canv.width;
@@ -42,9 +43,11 @@ let height = canv.height;
 ctx.translate(width/2, height/2);
 const Pi = Math.PI;
 
-let turtStep = 1.8; //Adjusts length of edge
-let turtTurnAng = Pi/2.25; //Adjusts Turn Angle
-let turtPos = new Vector(0, 0); //Adjusts starting position
+// Setting up Turtle
+let turtStep = 1.8; // Adjusts length of edge
+let turtTurnAng = Pi/3; // Adjusts Turn Angle
+
+let turtPos = new Vector(0, 0);
 let turtDir = new Vector(1, 0);
 
 let turt = new Turtle(turtPos, turtDir);
@@ -84,6 +87,8 @@ let turnP = () => { turt.turn(turtTurnAng) };
 let turnN = () => { turt.turn(-turtTurnAng) };
 
 /*
+    Example Fractals:
+
     Sierpinski Arrowhead:
     A --> BF+AF+B
     B --> AF-BF-A
@@ -116,33 +121,25 @@ let turnN = () => { turt.turn(-turtTurnAng) };
 */
 
 let Vars = [];
+let Axiom = 'A';
+let N = 8;
 
-//Adjusts rules and base functions
-Vars.push(new Variable('A', base, 'A'));
-Vars.push(new Variable('B', base, 'B'));
-Vars.push(new Variable('F', Forward, 'F+F--F+F'));
-Vars.push(new Variable('G', Forward, 'G'));
-Vars.push(new Variable('+', turnP, '+'));
-Vars.push(new Variable('-', turnN, '-'));
-
-let Axiom = 'F';
-
-for(let i=0; i<Vars.length; i++) {
-    Vars[i].setVariableList(Vars);
-    Vars[i].setActivationFunction();
-}
-
-function indxOf(name) {
-    for(let i=0; i<Vars.length; i++) {
-        if(Vars[i].name === name) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-main();
+run();
 function main() {
+    for(let i=0; i<Vars.length; i++) {
+        Vars[i].setVariableList(Vars);
+        Vars[i].setActivationFunction();
+    }
+    
+    function indxOf(name) {
+        for(let i=0; i<Vars.length; i++) {
+            if(Vars[i].name === name) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     let fBody = '';
     for(let i=0; i<Axiom.length; i++) {
         let indx = indxOf(Axiom.charAt(i));
@@ -157,8 +154,8 @@ function main() {
 
     ctx.strokeStyle = '#ffffff'; //Adjusts line color
     ctx.lineWidth = 1; //Adjusts line width
-    let N = 8;
 
+    // Running algorithm to find the mean position of all points on the curve.
     turt.moveTo(new Vector(0,0));
     turt.penUp();
     start(N);
@@ -170,6 +167,7 @@ function main() {
     console.log(xMin, yMin, xMax, yMax);
 
 
+    // Redrawing curve to be centered on the canvas.
     turt.moveTo(new Vector(-xMean,-yMean));
     turt.setDir(0);
     turt.penDown();
@@ -179,5 +177,56 @@ function main() {
     start(N);
 
     ctx.stroke();
-    console.log(xMin, yMin, xMax, yMax);
+}
+
+function getInputs() {
+    // Regex for invalid inputs.
+    let regex = new RegExp(/[^ABFG\+\-]/);
+
+    let axiomIn = document.getElementById("axiomIn").value.toUpperCase();
+    if (regex.test(axiomIn)) {
+        throw new Error("INVALID INPUT");
+    }
+
+    let aValIn = document.getElementById("aRelationships").value.toUpperCase();
+    if (regex.test(aValIn)) {
+        throw new Error("INVALID INPUT");
+    }
+    
+    let bValIn = document.getElementById("bRelationships").value.toUpperCase();
+    if (regex.test(bValIn)) {
+        throw new Error("INVALID INPUT");
+    }
+
+    let fValIn = document.getElementById("fRelationships").value.toUpperCase();
+    if (regex.test(fValIn)) {
+        throw new Error("INVALID INPUT");
+    }
+
+    let gValIn = document.getElementById("gRelationships").value.toUpperCase();
+    if (regex.test(gValIn)) {
+        throw new Error("INVALID INPUT");
+    }
+
+    N = document.getElementById("numIter").value;
+    turtTurnAng = document.getElementById("turnAngle").value * Pi / 180;
+    turtStep = document.getElementById("turnStepSize").value;
+    Axiom = axiomIn;
+    Vars = [];
+    
+    Vars.push(new Variable('A', base, aValIn));
+    Vars.push(new Variable('B', base, bValIn));
+    Vars.push(new Variable('F', Forward, fValIn));
+    Vars.push(new Variable('G', Forward, gValIn));
+    Vars.push(new Variable('+', turnP, '+'));
+    Vars.push(new Variable('-', turnN, '-'));
+}
+
+function run() {
+    try {
+        getInputs();
+        main();
+    } catch (error) {
+        console.log(error);
+    }
 }
